@@ -18,6 +18,8 @@ import tokenization_sentencepiece as tokenization
 import tensorflow as tf
 import utils
 
+import pandas as pd
+
 CURDIR = os.path.dirname(os.path.abspath(__file__))
 CONFIGPATH = os.path.join(CURDIR, os.pardir, 'config.ini')
 config = configparser.ConfigParser()
@@ -203,12 +205,8 @@ class DataProcessor(object):
   @classmethod
   def _read_tsv(cls, input_file, quotechar=None):
     """Reads a tab separated value file."""
-    with tf.gfile.Open(input_file, "r") as f:
-      reader = csv.reader(f, delimiter="\t", quotechar=quotechar)
-      lines = []
-      for line in reader:
-        lines.append(line)
-      return lines
+    lines = pd.read_csv(input_file,  header = None).values.tolist()
+    return lines
 
 
 class GeneralProcessor(DataProcessor):
