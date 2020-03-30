@@ -211,8 +211,8 @@ class DataProcessor(object):
       return lines
 
 
-class LivedoorProcessor(DataProcessor):
-  """Processor for the livedoor data set (see https://www.rondhuit.com/download.html)."""
+class GeneralProcessor(DataProcessor):
+  """You can specify labels on BERT_JAPANESE_LABELS env."""
 
   def get_train_examples(self, data_dir):
     """See base class."""
@@ -231,7 +231,7 @@ class LivedoorProcessor(DataProcessor):
 
   def get_labels(self):
     """See base class."""
-    return ['dokujo-tsushin', 'it-life-hack', 'kaden-channel', 'livedoor-homme', 'movie-enter', 'peachy', 'smax', 'sports-watch', 'topic-news']
+    return os.environ["BERT_JAPANESE_LABELS"].split(',')
 
   def _create_examples(self, lines, set_type):
     """Creates examples for the training and dev sets."""
@@ -659,7 +659,7 @@ def main(_):
   tf.logging.set_verbosity(tf.logging.INFO)
 
   processors = {
-      "livedoor": LivedoorProcessor,
+      "general": GeneralProcessor,
   }
 
   tokenization.validate_case_matches_checkpoint(FLAGS.do_lower_case,
