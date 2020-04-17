@@ -82,6 +82,9 @@ flags.DEFINE_bool(
     "do_predict", False,
     "Whether to run the model in inference mode on the test set.")
 
+flags.DEFINE_bool( "do_export", False, "export model as SavedModel.")
+flags.DEFINE_bool( "export_dir", None, "export dir when do_export")
+
 flags.DEFINE_integer("train_batch_size", 32, "Total batch size for training.")
 
 flags.DEFINE_integer("eval_batch_size", 8, "Total batch size for eval.")
@@ -826,6 +829,21 @@ def main(_):
         num_written_lines += 1
     assert num_written_lines == num_actual_predict_examples
 
+  if FLAGS.do_export:
+    def serving_input_fn():
+      label_ids = tf.placeholder(tf.int32, [None], name='label_ids')
+      input_ids = tf.placeholder(tf.int32, [None, FLAGS.max_seq_length], name='input_ids')
+      input_mask = tf.placeholder(tf.int32, [None, FLAGS.max_seq_length], name='input_mask')
+      segment_ids = tf.placeholder(tf.int32, [None, FLAGS.max_seq_length], name='segment_ids')
+      input_fn = tf.estimator.export.build_raw_serving_input_receiver_fn({
+          'label_ids': label_ids,
+          'input_ids': input_ids,
+          'input_mask': input_mask,
+          'segment_ids': segment_ids,
+      })()
+      return input_fn
+    estimator._export_to_tpu = False
+    estimator.export_savedmodel(FLAGS.export_dir, serving_input_fn)
 
 if __name__ == "__main__":
   flags.mark_flag_as_required("data_dir")
