@@ -678,7 +678,7 @@ def main(_):
 
   tf.gfile.MakeDirs(FLAGS.output_dir)
 
-  processor = GeneralProcessor
+  processor = GeneralProcessor()
 
   label_list = processor.get_labels()
 
