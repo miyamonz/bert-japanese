@@ -83,7 +83,7 @@ flags.DEFINE_bool(
     "Whether to run the model in inference mode on the test set.")
 
 flags.DEFINE_bool( "do_export", False, "export model as SavedModel.")
-flags.DEFINE_bool( "export_dir", None, "export dir when do_export")
+flags.DEFINE_string( "export_dir", None, "export dir when do_export")
 
 flags.DEFINE_integer("train_batch_size", 32, "Total batch size for training.")
 
@@ -664,7 +664,7 @@ def main(_):
   tokenization.validate_case_matches_checkpoint(FLAGS.do_lower_case,
                                                 FLAGS.init_checkpoint)
 
-  if not FLAGS.do_train and not FLAGS.do_eval and not FLAGS.do_predict:
+  if not FLAGS.do_train and not FLAGS.do_eval and not FLAGS.do_predict and not FLAGS.do_export:
     raise ValueError(
         "At least one of `do_train`, `do_eval` or `do_predict' must be True.")
 
